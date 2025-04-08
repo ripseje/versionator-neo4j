@@ -1,0 +1,31 @@
+{
+  "name": "versionator-neo4j",
+  "version": "1.0.0",
+  "description": "Batch to get the package data from all repositories and back them up on neo4j database",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "jest --coverage",
+    "qa": "node ./deploy/sonarqube-scanner.js",
+    "zip": "rm versionator-neo4j.zip;zip -r versionator-neo4j src spec .env package.json README.md"
+  },
+  "sonar": {
+    "sources": ".",
+    "inclusions": "src/**",
+    "encoding": "UTF-8",
+    "language": "javascript",
+    "testCoverage": "coverage/lcov.info",
+    "testDir": "test"
+  },
+  "author": "ripseje",
+  "dependencies": {
+    "dotenv": "16.4.5",
+    "neo4j-driver": "^5.28.1"
+  },
+  "devDependencies": {
+    "jest": "29.7.0",
+    "mocked-env": "1.3.5",
+    "sonarqube-scanner": "3.3.0"
+  },
+  "projectType": "batch_np_plan"
+}

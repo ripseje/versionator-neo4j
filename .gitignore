@@ -1,0 +1,10 @@
+node_modules
+package-lock.json
+*.zip
+coverage
+deploy
+.npmrc
+test
+temp_repos
+resources/libs.json
+resources/repos.json

@@ -1,0 +1,17 @@
+PORT=3100
+
+LOG_LEVEL=info
+LOGGER_PATH=./env/local_logger.json
+SWAGGER_ENABLED=true
+SWAGGER_ENABLED_API_DOC=true
+
+
+NODE_TLS_REJECT_UNAUTHORIZED=0
+
+ORG=test
+PROJECTS=["test1", "test2"]
+LIBRARIES=["test3", "test4", "test5"]
+
+NEO_USER=neo4j
+NEO_URI='bolt://localhost:7687'
+NEO_PWD=12341234
