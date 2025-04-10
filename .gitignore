@@ -8,3 +8,4 @@ test
 temp_repos
 resources/libs.json
 resources/repos.json
+resources/projects.json
