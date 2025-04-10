@@ -8,9 +8,11 @@ const path = require('path');
 const dirname = 'resources';
 const route = path.resolve(__dirname, '..', '..',dirname)
 
-const scriptPath = path.join(route, 'lib_finder.sh');
-const librariesFile = path.join(route, 'libs.json');
-const repositoriesFile = path.join(route, 'repos.json');
+const libFinderPath = path.join(route, config.usedFiles.libFinder);
+const projectFinderPath = path.join(route, config.usedFiles.projectFinder);
+const librariesFile = path.join(route, config.usedFiles.libraries);
+const repositoriesFile = path.join(route, config.usedFiles.repositories);
+const projectsFile = path.join(route, config.usedFiles.projectFinder);
 
 let args = [config.shellParameters.org, ''];
 
@@ -18,11 +20,11 @@ const { promisify } = require('util');
 const fs = require('fs/promises'); // <-- usamos fs.promises
 const execFileAsync = promisify(execFile);
 
-async function executeShellScript(project) {
+async function executeLibrariesFinder(project) {
     try {
         args[1] = project
         // Ejecutamos el script
-        const { stdout, stderr } = await execFileAsync(scriptPath, args, { shell: true });
+        const { stdout, stderr } = await execFileAsync(libFinderPath, args, { shell: true });
 
         if (stderr) {
             logger.warn('stderr del script:', stderr);
@@ -39,6 +41,31 @@ async function executeShellScript(project) {
         const repositories = JSON.parse(repositoriesContent);
 
         return { libraries, repositories };
+
+    } catch (error) {
+        logger.error('Error ejecutando el script o procesando JSON:', error);
+        throw error;
+    }
+}
+
+async function executeProjectFinder() {
+    try {
+        // Ejecutamos el script
+        const { stdout, stderr } = await execFileAsync(projectFinderPath, args, { shell: true });
+
+        if (stderr) {
+            logger.warn('stderr del script:', stderr);
+        }
+
+        // Leemos los archivos JSON de forma asíncrona
+        const [raw_projects] = await Promise.all([
+            fs.readFile(projectsFile, 'utf-8'),
+        ]);
+
+        // Parseamos
+        const projects = typeof raw_projects === 'object' ? raw_projects : JSON.parse(raw_projects);
+
+        return projects
 
     } catch (error) {
         logger.error('Error ejecutando el script o procesando JSON:', error);
@@ -102,7 +129,8 @@ async function createRelations(repos){ //TODO: ver si se puede cambiar Package p
 }
   
 exports.business={
-    executeShellScript:executeShellScript,
+    executeLibrariesFinder:executeLibrariesFinder,
+    executeProjectFinder:executeProjectFinder,
     createSolutionNodes:createSolutionNodes,
     createRelations:createRelations
 };

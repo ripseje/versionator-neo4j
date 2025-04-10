@@ -16,5 +16,12 @@ exports.config = {
         uri: process.env.NEO_URI,
         user: process.env.NEO_USER,
         password: process.env.NEO_PWD
+    },
+    usedFiles: {
+        libFinder: process.env.LIB_FINDER_FILE,
+        projectFinder: process.env.PROJECT_FINDER_FILE,
+        libraries: process.env.LIBRARIES_FILE,
+        repositories: process.env.REPOSITORIES_FILE,
+        projects: process.env.PROJECTS_FILE,
     }
 };
