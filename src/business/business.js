@@ -1,5 +1,4 @@
 const config = require('../common/config').config;
-const logger = require("ahmutils").logger(config.loggerPath).getLogger("business");
 const neo4j_data = require('../data/database').neo4j
 const common_utils = require('../common/utils').utils
 
@@ -27,7 +26,7 @@ async function executeLibrariesFinder(project) {
         const { stdout, stderr } = await execFileAsync(libFinderPath, args, { shell: true });
 
         if (stderr) {
-            logger.warn('stderr del script:', stderr);
+            console.log('script stderr:', stderr);
         }
 
         // Leemos los archivos JSON de forma asíncrona
@@ -43,7 +42,7 @@ async function executeLibrariesFinder(project) {
         return { libraries, repositories };
 
     } catch (error) {
-        logger.error('Error ejecutando el script o procesando JSON:', error);
+        console.error('Error executing the script or processing JSON.parse:', error);
         throw error;
     }
 }
@@ -54,7 +53,7 @@ async function executeProjectFinder() {
         const { stdout, stderr } = await execFileAsync(projectFinderPath, args, { shell: true });
 
         if (stderr) {
-            logger.warn('stderr del script:', stderr);
+            console.log('script stderr:', stderr);
         }
 
         // Leemos los archivos JSON de forma asíncrona
@@ -68,7 +67,7 @@ async function executeProjectFinder() {
         return projects
 
     } catch (error) {
-        logger.error('Error ejecutando el script o procesando JSON:', error);
+        console.error('Error executing the script or processing JSON.parse:', error);
         throw error;
     }
 }
@@ -91,7 +90,7 @@ async function createSolutionNodes(repos, proyect){
         await neo4j_data.runQuery(query, { names: repos, libraries: config.shellParameters.libraries})
     }
     catch(error) {
-        logger.error('Error running query: ', error)
+        console.error('Error running query: ', error)
         throw error;
     }
 }
@@ -123,7 +122,7 @@ async function createRelations(repos){ //TODO: ver si se puede cambiar Package p
         await neo4j_data.runQuery(query, {relations: relations})
     }
     catch(error) {
-        logger.error('Error running query: ', error)
+        console.error('Error running query: ', error)
         throw error;
     }
 }
