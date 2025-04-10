@@ -12,7 +12,7 @@ const scriptPath = path.join(route, 'lib_finder.sh');
 const librariesFile = path.join(route, 'libs.json');
 const repositoriesFile = path.join(route, 'repos.json');
 
-let args = [config.shellParameters.org, '', ...config.shellParameters.libraries];
+let args = [config.shellParameters.org, ''];
 
 const { promisify } = require('util');
 const fs = require('fs/promises'); // <-- usamos fs.promises
@@ -49,12 +49,19 @@ async function executeShellScript(project) {
 
 async function createSolutionNodes(repos, proyect){
     const label = await common_utils.labelCharacterResolver(proyect)
+
     const query = `
         UNWIND $names AS name
-        MERGE (s:Solution:${label}{name: name})
+        MERGE (s:Solution {name: name})
+        WITH s, name
+        FOREACH (_ IN CASE WHEN name IN $libraries THEN [1] ELSE [] END |
+            SET s:Library
+        )
+        SET s:${label}
     `;
+
     try {
-        await neo4j_data.runQuery(query, { names: repos})
+        await neo4j_data.runQuery(query, { names: repos, libraries: config.shellParameters.libraries})
     }
     catch(error) {
         logger.error('Error running query: ', error)
